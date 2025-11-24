@@ -1,0 +1,2 @@
+example content
+This file represents language-neutral source files.

@@ -1,0 +1,27 @@
+name: Release
+on:
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create release ZIP
+        shell: pwsh
+        run: |
+          $tag = 'v1.0.' + $env:GITHUB_RUN_NUMBER
+          if (Test-Path -Path release.zip) { Remove-Item -Path release.zip }
+          Compress-Archive -Path src/* -DestinationPath release.zip
+          Write-Output "Release tag will be: $tag"
+          echo "TAG=$tag" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ env.TAG }}
+          name: Release ${{ env.TAG }}
+          body: "Automated release from workflow_dispatch"
+          artifacts: "release.zip"
