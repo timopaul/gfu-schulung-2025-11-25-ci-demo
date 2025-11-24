@@ -1,13 +1,13 @@
-Git Flow Quick Guide
+# Git Flow Quick Guide
 
-Branches:
+## Branches:
 - main: production
 - develop: integration
 - feature/*: from develop
 - release/*: for release stabilization
 - hotfix/*: urgent fixes from main
 
-Typical flow:
+## Typical flow:
 1. git checkout develop
 2. git checkout -b feature/foo
 3. work, commit, push
