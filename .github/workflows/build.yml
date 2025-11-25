@@ -11,15 +11,43 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for tags
+
+      - name: Get version from Git tags
+        id: version
+        shell: pwsh
+        run: |
+          # Get the latest tag, or use v0.0.0 as fallback
+          $tag = git describe --tags --abbrev=0 2>$null
+          if (-not $tag) {
+            $tag = "v0.0.0"
+          }
+          
+          # Remove 'v' prefix if present
+          $version = $tag -replace '^v', ''
+          
+          # Add build number for uniqueness
+          $buildNumber = "${{ github.run_number }}"
+          $fullVersion = "$version-build.$buildNumber"
+          
+          echo "VERSION=$fullVersion" >> $env:GITHUB_OUTPUT
+          echo "TAG=$tag" >> $env:GITHUB_OUTPUT
+          Write-Host "Using version: $fullVersion"
 
       - name: Create ZIP package (PowerShell)
         shell: pwsh
         run: |
-          if (Test-Path -Path build.zip) { Remove-Item -Path build.zip }
-          Compress-Archive -Path src/* -DestinationPath build.zip
+          $version = "${{ steps.version.outputs.VERSION }}"
+          $zipName = "build-$version.zip"
+          
+          if (Test-Path -Path $zipName) { Remove-Item -Path $zipName }
+          Compress-Archive -Path src/* -DestinationPath $zipName
+          
+          Write-Host "Created: $zipName"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: demo-build
-          path: build.zip
+          name: demo-build-${{ steps.version.outputs.VERSION }}
+          path: build-*.zip
