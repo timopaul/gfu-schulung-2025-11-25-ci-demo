@@ -46,9 +46,9 @@ Umfassende Anleitung zur Verwendung von Git Hooks in diesem Projekt:
 │   └── workflows/          # GitHub Actions CI/CD Workflows
 ├── .githooks/              # Versionierte Git Hooks
 ├── docs/                   # Dokumentation (dieser Ordner)
-│   ├── index.md           # Diese Datei
-│   ├── GITFLOW.md         # Git Flow Guide
-│   └── GIT-HOOKS-GUIDE.md # Git Hooks Anleitung
+│   ├── index.md            # Diese Datei
+│   ├── GITFLOW.md          # Git Flow Guide
+│   └── GIT-HOOKS-GUIDE.md  # Git Hooks Anleitung
 ├── src/                    # Quellcode
 └── setup-git-hook.ps1      # Setup-Skript für Hooks
 ```
