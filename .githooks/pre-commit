@@ -1,0 +1,29 @@
+#!/bin/sh
+# Simple Pre-Commit Hook
+# This hook runs before each commit
+
+echo "🔍 Running pre-commit hook..."
+
+# Check commit message length (validated later during git commit)
+
+# Example: Check for TODO comments in staged files
+if git diff --cached --name-only | xargs grep -l "TODO" > /dev/null 2>&1; then
+    echo "⚠️  Warning: There are still TODO comments in the files!"
+    echo "   Do you really want to commit? (Press Ctrl+C to abort)"
+    sleep 2
+fi
+
+# Example: Check if large files are being added (>1MB)
+for file in $(git diff --cached --name-only); do
+    if [ -f "$file" ]; then
+        size=$(du -k "$file" | cut -f1)
+        if [ $size -gt 1024 ]; then
+            echo "❌ Error: File '$file' is larger than 1MB (${size}KB)"
+            echo "   Large files should not be added to the repository!"
+            exit 1
+        fi
+    fi
+done
+
+echo "✅ Pre-commit hook passed successfully!"
+exit 0
